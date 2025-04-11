@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <include file="classpath:db/changelog/db.changelog-001-create-table-users.sql"/>
+    <include file="classpath:db/changelog/db.changelog-002-create-table-role.sql"/>
+    <include file="classpath:db/changelog/db.changelog-003-create-table-user-role.sql"/>
+    <include file="classpath:db/changelog/db.changelog-004-create-table-card.sql"/>
+    <include file="classpath:db/changelog/db.changelog-005-create-table-transaction.sql"/>
+    <include file="classpath:db/changelog/db.changelog-006-create-table-limit.sql"/>
+    <include file="classpath:db/changelog/db.changelog-007-insert-data.sql"/>
+</databaseChangeLog>
