@@ -1,0 +1,53 @@
+package com.example.testtaskeffectmobile.controller;
+
+import com.example.testtaskeffectmobile.dto.AppErrorDto;
+import com.example.testtaskeffectmobile.dto.FieldErrorDto;
+import com.example.testtaskeffectmobile.exception.LoginFailedException;
+import com.example.testtaskeffectmobile.exception.PasswordsNotTheSameException;
+import com.example.testtaskeffectmobile.exception.RegistrationFailedException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.HashMap;
+import java.util.Map;
+
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<FieldErrorDto> handleValidationExceptions(MethodArgumentNotValidException methodArgumentNotValidException) {
+        Map<String, String> errors = new HashMap<>();
+        methodArgumentNotValidException.getBindingResult().getAllErrors().forEach(error -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            errors.put(fieldName, errorMessage);
+        });
+        return new ResponseEntity<>(new FieldErrorDto(errors,400), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(RegistrationFailedException.class)
+    public ResponseEntity<AppErrorDto> handleRegistrationFailedException(RegistrationFailedException registrationFailedException) {
+        return new ResponseEntity<>(new AppErrorDto(registrationFailedException.getMessage(),400), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(LoginFailedException.class)
+    public ResponseEntity<AppErrorDto> handleLoginFailedException(LoginFailedException loginFailedException) {
+        return new ResponseEntity<>(new AppErrorDto(loginFailedException.getMessage(),400), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(DisabledException.class)
+    public ResponseEntity<AppErrorDto> handleDisabledException(DisabledException disabledException) {
+        return new ResponseEntity<>(new AppErrorDto(disabledException.getMessage(),403), HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(PasswordsNotTheSameException.class)
+    public ResponseEntity<AppErrorDto> handlePasswordsNotTheSameException(PasswordsNotTheSameException passwordsNotTheSameException) {
+        return new ResponseEntity<>(new AppErrorDto(passwordsNotTheSameException.getMessage(),400), HttpStatus.BAD_REQUEST);
+    }
+
+}

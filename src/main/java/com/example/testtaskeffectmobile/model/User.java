@@ -13,6 +13,7 @@ import java.util.*;
 public class User {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Column(name = "first_name", nullable = false)
@@ -31,6 +32,14 @@ public class User {
     @Column(name = "password", nullable = false)
     @NotBlank(message = "password must be not blank")
     private String password;
+
+    @Column(name = "is_ban", nullable = false)
+    private Boolean isBan;
+
+    @PrePersist
+    public void init() {
+        isBan = false;
+    }
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(

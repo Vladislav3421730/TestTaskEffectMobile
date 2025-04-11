@@ -18,7 +18,7 @@ spring:
     enabled: true
     change-log: classpath:db/changelog/db.changelog-master.xml
 
-  jwt:
-    secret: 984hg493gh0439rthr0429uruj2309yh937gc763fe87t3f89723gf
-    lifetime: 30m
+jwt:
+  secret: 984hg493gh0439rthr0429uruj2309yh937gc763fe87t3f89723gf
+  lifetime: 30m
 

@@ -13,6 +13,7 @@ import java.util.UUID;
 public class Limit {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Column(name = "daily_limit", nullable = false)
