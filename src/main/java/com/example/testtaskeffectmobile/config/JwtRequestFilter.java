@@ -1,6 +1,6 @@
 package com.example.testtaskeffectmobile.config;
 
-import com.example.testtaskeffectmobile.dto.AppErrorDto;
+import com.example.testtaskeffectmobile.dto.error.AppErrorDto;
 import com.example.testtaskeffectmobile.utils.JwtAccessTokenUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.ExpiredJwtException;

@@ -1,9 +1,9 @@
 package com.example.testtaskeffectmobile.controller;
 
-import com.example.testtaskeffectmobile.dto.AppErrorDto;
-import com.example.testtaskeffectmobile.dto.JwtResponseDto;
-import com.example.testtaskeffectmobile.dto.LoginUserDto;
-import com.example.testtaskeffectmobile.dto.RegisterUserDto;
+import com.example.testtaskeffectmobile.dto.error.AppErrorDto;
+import com.example.testtaskeffectmobile.dto.responce.JwtResponseDto;
+import com.example.testtaskeffectmobile.dto.request.LoginUserRequestDto;
+import com.example.testtaskeffectmobile.dto.request.RegisterUserRequestDto;
 import com.example.testtaskeffectmobile.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -41,7 +41,7 @@ public class AuthController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppErrorDto.class))
             )
     })
-    public ResponseEntity<JwtResponseDto> createToken(@RequestBody @Valid LoginUserDto userDto) {
+    public ResponseEntity<JwtResponseDto> createToken(@RequestBody @Valid LoginUserRequestDto userDto) {
         JwtResponseDto jwtResponseDto = authService.createAuthToken(userDto);
         return ResponseEntity.ok(jwtResponseDto);
     }
@@ -59,8 +59,8 @@ public class AuthController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppErrorDto.class))
             )
     })
-    public ResponseEntity<Void> registerUser(@RequestBody @Valid RegisterUserDto registerUserDto) {
-        authService.registerUser(registerUserDto);
+    public ResponseEntity<Void> registerUser(@RequestBody @Valid RegisterUserRequestDto registerUserRequestDto) {
+        authService.registerUser(registerUserRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

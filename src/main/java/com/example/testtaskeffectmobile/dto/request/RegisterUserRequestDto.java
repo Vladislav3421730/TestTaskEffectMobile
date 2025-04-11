@@ -1,9 +1,8 @@
-package com.example.testtaskeffectmobile.dto;
+package com.example.testtaskeffectmobile.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,7 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Schema(description = "DTO for registering a new user")
-public class RegisterUserDto {
+public class RegisterUserRequestDto {
 
     @Schema(description = "LastName for the new user. Must be at least 3 characters long.", example = "john_doe")
     @NotBlank(message = "LastName cannot be blank.")

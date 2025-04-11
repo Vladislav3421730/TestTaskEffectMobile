@@ -1,8 +1,8 @@
 package com.example.testtaskeffectmobile.service.impl;
 
-import com.example.testtaskeffectmobile.dto.JwtResponseDto;
-import com.example.testtaskeffectmobile.dto.LoginUserDto;
-import com.example.testtaskeffectmobile.dto.RegisterUserDto;
+import com.example.testtaskeffectmobile.dto.responce.JwtResponseDto;
+import com.example.testtaskeffectmobile.dto.request.LoginUserRequestDto;
+import com.example.testtaskeffectmobile.dto.request.RegisterUserRequestDto;
 import com.example.testtaskeffectmobile.exception.LoginFailedException;
 import com.example.testtaskeffectmobile.exception.PasswordsNotTheSameException;
 import com.example.testtaskeffectmobile.exception.RegistrationFailedException;
@@ -30,7 +30,7 @@ public class AuthServiceImpl implements AuthService {
     private final JwtAccessTokenUtils jwtAccessTokenUtils;
 
     @Override
-    public JwtResponseDto createAuthToken(LoginUserDto user) {
+    public JwtResponseDto createAuthToken(LoginUserRequestDto user) {
         try {
             log.info("Attempting authentication for user: {}", user.getEmail());
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
@@ -47,7 +47,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public void registerUser(RegisterUserDto user) {
+    public void registerUser(RegisterUserRequestDto user) {
         log.info("Starting registration process for user: {}", user.getEmail());
 
         if (!user.getPassword().equals(user.getConfirmPassword())) {

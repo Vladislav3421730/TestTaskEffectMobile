@@ -1,6 +1,6 @@
 package com.example.testtaskeffectmobile.handler;
 
-import com.example.testtaskeffectmobile.dto.AppErrorDto;
+import com.example.testtaskeffectmobile.dto.error.AppErrorDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

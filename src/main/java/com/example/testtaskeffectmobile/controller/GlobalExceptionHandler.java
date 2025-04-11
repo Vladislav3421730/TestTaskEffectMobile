@@ -1,7 +1,7 @@
 package com.example.testtaskeffectmobile.controller;
 
-import com.example.testtaskeffectmobile.dto.AppErrorDto;
-import com.example.testtaskeffectmobile.dto.FieldErrorDto;
+import com.example.testtaskeffectmobile.dto.error.AppErrorDto;
+import com.example.testtaskeffectmobile.dto.error.FieldErrorDto;
 import com.example.testtaskeffectmobile.exception.LoginFailedException;
 import com.example.testtaskeffectmobile.exception.PasswordsNotTheSameException;
 import com.example.testtaskeffectmobile.exception.RegistrationFailedException;

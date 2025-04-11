@@ -1,11 +1,11 @@
 package com.example.testtaskeffectmobile.service;
 
-import com.example.testtaskeffectmobile.dto.JwtResponseDto;
-import com.example.testtaskeffectmobile.dto.LoginUserDto;
-import com.example.testtaskeffectmobile.dto.RegisterUserDto;
+import com.example.testtaskeffectmobile.dto.responce.JwtResponseDto;
+import com.example.testtaskeffectmobile.dto.request.LoginUserRequestDto;
+import com.example.testtaskeffectmobile.dto.request.RegisterUserRequestDto;
 
 public interface AuthService {
 
-    JwtResponseDto createAuthToken(LoginUserDto user);
-    void registerUser(RegisterUserDto user);
+    JwtResponseDto createAuthToken(LoginUserRequestDto user);
+    void registerUser(RegisterUserRequestDto user);
 }

@@ -1,7 +1,9 @@
 package com.example.testtaskeffectmobile.service.impl;
 
-import com.example.testtaskeffectmobile.dto.RegisterUserDto;
+import com.example.testtaskeffectmobile.dto.request.BannedRequestDto;
+import com.example.testtaskeffectmobile.dto.request.RegisterUserRequestDto;
 import com.example.testtaskeffectmobile.exception.RoleNotFoundException;
+import com.example.testtaskeffectmobile.exception.UserNotFoundException;
 import com.example.testtaskeffectmobile.mapper.UserMapper;
 import com.example.testtaskeffectmobile.model.Role;
 import com.example.testtaskeffectmobile.model.User;
@@ -13,6 +15,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -28,9 +32,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void save(RegisterUserDto registerUserDto) {
-        log.info("Creating new user entity for: {}", registerUserDto.getEmail());
-        User userDB = userMapper.toNewEntity(registerUserDto);
+    public void save(RegisterUserRequestDto registerUserRequestDto) {
+        log.info("Creating new user entity for: {}", registerUserRequestDto.getEmail());
+        User userDB = userMapper.toNewEntity(registerUserRequestDto);
 
         Role role = roleRepository.findByName(USER_ROLE_NAME)
                 .orElseThrow(() -> {
@@ -43,5 +47,30 @@ public class UserServiceImpl implements UserService {
         userRepository.save(userDB);
         log.info("User {} registered successfully", userDB.getEmail());
     }
+
+    @Override
+    @Transactional
+    public void delete(UUID id) {
+        if(!userRepository.existsById(id)) {
+            log.error("User with id {} wasn't found", id);
+            throw new UserNotFoundException(String.format("User with id %s wasn't found", id));
+        }
+        userRepository.deleteById(id);
+        log.info("User with id {} was successfully deleted", id);
+    }
+
+    @Override
+    @Transactional
+    public void banUser(UUID id, BannedRequestDto bannedRequestDto) {
+        User user = userRepository.findById(id)
+                .orElseThrow(()->{
+                    log.error("User with id {} wasn't found", id);
+                    throw new UserNotFoundException(String.format("User with id %s wasn't found", id));
+                });
+        user.setIsBan(bannedRequestDto.getBanned());
+        userRepository.save(user);
+        log.info("User was successfully updated, set ban status: {}", bannedRequestDto.getBanned());
+    }
+
 
 }

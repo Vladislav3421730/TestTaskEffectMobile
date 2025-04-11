@@ -1,4 +1,4 @@
-package com.example.testtaskeffectmobile.dto;
+package com.example.testtaskeffectmobile.dto.responce;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;

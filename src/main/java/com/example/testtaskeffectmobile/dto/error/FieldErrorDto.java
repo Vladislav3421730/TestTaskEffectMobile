@@ -1,5 +1,6 @@
-package com.example.testtaskeffectmobile.dto;
+package com.example.testtaskeffectmobile.dto.error;
 
+import com.example.testtaskeffectmobile.dto.error.ErrorDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;

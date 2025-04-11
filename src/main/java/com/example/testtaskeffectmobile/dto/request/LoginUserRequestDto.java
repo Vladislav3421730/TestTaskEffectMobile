@@ -1,4 +1,4 @@
-package com.example.testtaskeffectmobile.dto;
+package com.example.testtaskeffectmobile.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Schema(description = "DTO for user login containing email and password")
 @NoArgsConstructor
 @AllArgsConstructor
-public class LoginUserDto {
+public class LoginUserRequestDto {
 
     @NotNull(message = "Email must be not null")
     @Email(message = "Email must contains @")
