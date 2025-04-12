@@ -2,9 +2,7 @@ package com.example.testtaskeffectmobile.controller;
 
 import com.example.testtaskeffectmobile.dto.error.AppErrorDto;
 import com.example.testtaskeffectmobile.dto.error.FieldErrorDto;
-import com.example.testtaskeffectmobile.exception.LoginFailedException;
-import com.example.testtaskeffectmobile.exception.PasswordsNotTheSameException;
-import com.example.testtaskeffectmobile.exception.RegistrationFailedException;
+import com.example.testtaskeffectmobile.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.DisabledException;
@@ -30,6 +28,12 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(new FieldErrorDto(errors,400), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<AppErrorDto> handleEntityNotFoundException(EntityNotFoundException entityNotFoundException) {
+        return new ResponseEntity<>(new AppErrorDto(entityNotFoundException.getMessage(),404), HttpStatus.NOT_FOUND);
+    }
+
+
     @ExceptionHandler(RegistrationFailedException.class)
     public ResponseEntity<AppErrorDto> handleRegistrationFailedException(RegistrationFailedException registrationFailedException) {
         return new ResponseEntity<>(new AppErrorDto(registrationFailedException.getMessage(),400), HttpStatus.BAD_REQUEST);
@@ -48,6 +52,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(PasswordsNotTheSameException.class)
     public ResponseEntity<AppErrorDto> handlePasswordsNotTheSameException(PasswordsNotTheSameException passwordsNotTheSameException) {
         return new ResponseEntity<>(new AppErrorDto(passwordsNotTheSameException.getMessage(),400), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(EncryptionFailedException.class)
+    public ResponseEntity<AppErrorDto> handleEncryptionFailedException(EncryptionFailedException encryptionFailedException) {
+        return new ResponseEntity<>(new AppErrorDto(encryptionFailedException.getMessage(),400), HttpStatus.BAD_REQUEST);
     }
 
 }

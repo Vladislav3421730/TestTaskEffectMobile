@@ -1,7 +1,8 @@
 package com.example.testtaskeffectmobile.model.enums;
 
 public enum CardStatus {
-    ACCEPTED,
+    ACTIVE,
     BLOCKED,
     EXPIRED
 }
+

@@ -51,7 +51,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void delete(UUID id) {
-        if(!userRepository.existsById(id)) {
+        if (!userRepository.existsById(id)) {
             log.error("User with id {} wasn't found", id);
             throw new UserNotFoundException(String.format("User with id %s wasn't found", id));
         }
@@ -62,14 +62,18 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void banUser(UUID id, BannedRequestDto bannedRequestDto) {
-        User user = userRepository.findById(id)
-                .orElseThrow(()->{
+        User user = findById(id);
+        userRepository.save(user);
+        log.info("User was successfully updated, set ban status: {}", bannedRequestDto.getBanned());
+    }
+
+    @Override
+    public User findById(UUID id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> {
                     log.error("User with id {} wasn't found", id);
                     throw new UserNotFoundException(String.format("User with id %s wasn't found", id));
                 });
-        user.setIsBan(bannedRequestDto.getBanned());
-        userRepository.save(user);
-        log.info("User was successfully updated, set ban status: {}", bannedRequestDto.getBanned());
     }
 
 
