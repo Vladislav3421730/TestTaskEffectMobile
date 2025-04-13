@@ -1,8 +1,10 @@
 package com.example.testtaskeffectmobile.service.impl;
 
+import com.example.testtaskeffectmobile.convertor.CardNumberCryptoConverter;
 import com.example.testtaskeffectmobile.dto.CardDto;
 import com.example.testtaskeffectmobile.dto.request.AddCardRequestDto;
 import com.example.testtaskeffectmobile.dto.request.StatusCardRequestDto;
+import com.example.testtaskeffectmobile.exception.CardAlreadyExistException;
 import com.example.testtaskeffectmobile.exception.CardNotFoundException;
 import com.example.testtaskeffectmobile.exception.UserNotFoundException;
 import com.example.testtaskeffectmobile.mapper.CardMapper;
@@ -27,13 +29,17 @@ public class CardServiceImpl implements CardService {
     private final CardRepository cardRepository;
     private final UserRepository userRepository;
     private final CardMapper cardMapper;
-
     @Override
     public void save(AddCardRequestDto addCardRequestDto) {
         User user = userRepository.findById(addCardRequestDto.getUserId()).orElseThrow(() -> {
             log.error("User with id {} wasn't found", addCardRequestDto.getUserId());
             throw new UserNotFoundException(String.format("User with id %s wasn't found", addCardRequestDto.getUserId()));
         });
+
+        if(cardRepository.existsCardByNumber(addCardRequestDto.getNumber())) {
+            log.error("Card with number {} already exist", addCardRequestDto.getNumber());
+            throw new CardAlreadyExistException(String.format("Card with number %s already exist", addCardRequestDto.getNumber()));
+        }
 
         Card card = Card.builder()
                 .user(user)

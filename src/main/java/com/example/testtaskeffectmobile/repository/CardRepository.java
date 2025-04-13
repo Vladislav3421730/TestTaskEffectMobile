@@ -9,6 +9,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface CardRepository extends JpaRepository<Card, UUID> {
+    Boolean existsCardByNumber(String number);
+
     Optional<Card> findCardByUserEmailAndNumber(String email, String number);
+
     Page<Card> findAllByUserEmail(String email, PageRequest pageRequest);
 }

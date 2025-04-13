@@ -29,16 +29,15 @@ public class TransactionServiceImpl implements TransactionService {
     private final CardRepository cardRepository;
     private final CardValidationUtils cardValidationUtils;
     private final TransactionRepository transactionRepository;
-    private final CardNumberCryptoConverter cardNumberCryptoConverter;
 
     @Override
     public WithdrawalResponseDto withdrawal(String email, WithdrawalRequestDto withdrawalRequestDto) {
-        Card card = cardRepository.findCardByUserEmailAndNumber(email,
-                        cardNumberCryptoConverter.convertToDatabaseColumn(withdrawalRequestDto.getNumber()))
+        Card card = cardRepository.findCardByUserEmailAndNumber(email, withdrawalRequestDto.getNumber())
                 .orElseThrow(() -> {
                     log.error("Card with number {} wasn't founded", withdrawalRequestDto.getNumber());
                     throw new CardNotFoundException(String.format("Card with if %s wasn't found", withdrawalRequestDto.getNumber()));
                 });
+
         cardValidationUtils.validate(card, withdrawalRequestDto.getAmount(), OperationType.WITHDRAWAL);
         if (card.getBalance().compareTo(withdrawalRequestDto.getAmount()) < 0) {
             Transaction failedTransaction = TransactionFactory

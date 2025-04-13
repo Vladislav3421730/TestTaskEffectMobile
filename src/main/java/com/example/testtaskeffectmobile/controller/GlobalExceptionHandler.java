@@ -64,6 +64,16 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(new AppErrorDto(cardStatusException.getMessage(),400), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(CardAlreadyExistException.class)
+    public ResponseEntity<AppErrorDto> handleCardAlreadyExistException(CardAlreadyExistException cardAlreadyExistException) {
+        return new ResponseEntity<>(new AppErrorDto(cardAlreadyExistException.getMessage(),400), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(CardBalanceException.class)
+    public ResponseEntity<AppErrorDto> handleCardBalanceException(CardBalanceException cardBalanceException) {
+        return new ResponseEntity<>(new AppErrorDto(cardBalanceException.getMessage(),400), HttpStatus.BAD_REQUEST);
+    }
+
 
 
 }

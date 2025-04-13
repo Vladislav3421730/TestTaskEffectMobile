@@ -12,10 +12,9 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import java.security.SecureRandom;
+import java.security.MessageDigest;
 import java.util.Base64;
 
-@Component
 @Converter
 @Slf4j
 public class CardNumberCryptoConverter implements AttributeConverter<String, String> {
@@ -37,16 +36,26 @@ public class CardNumberCryptoConverter implements AttributeConverter<String, Str
         return cipher;
     }
 
+    private byte[] generateDeterministicIv(String input) throws Exception {
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        byte[] hash = digest.digest(input.getBytes(StandardCharsets.UTF_8));
+        byte[] iv = new byte[IV_LENGTH];
+        System.arraycopy(hash, 0, iv, 0, IV_LENGTH);
+        return iv;
+    }
+
     @Override
     public String convertToDatabaseColumn(String attribute) {
         try {
-            byte[] iv = SecureRandom.getInstanceStrong().generateSeed(IV_LENGTH);
+            byte[] iv = generateDeterministicIv(attribute);
             Cipher cipher = getCipher(Cipher.ENCRYPT_MODE, iv);
             byte[] encrypted = cipher.doFinal(attribute.getBytes(StandardCharsets.UTF_8));
+
             byte[] encryptedWithIv = ByteBuffer.allocate(iv.length + encrypted.length)
                     .put(iv)
                     .put(encrypted)
                     .array();
+
             return Base64.getEncoder().encodeToString(encryptedWithIv);
         } catch (Exception e) {
             log.error("Failed to encrypt card number", e);
@@ -68,9 +77,9 @@ public class CardNumberCryptoConverter implements AttributeConverter<String, Str
             String decrypted = new String(cipher.doFinal(encrypted), StandardCharsets.UTF_8);
 
             StringBuilder str = new StringBuilder(decrypted);
-            for(int i=0; i < decrypted.length() - 4; i++) {
-                if(decrypted.charAt(i) != ' ') {
-                    str.replace(i, i+1, "*");
+            for (int i = 0; i < decrypted.length() - 4; i++) {
+                if (decrypted.charAt(i) != ' ') {
+                    str.replace(i, i + 1, "*");
                 }
             }
             return str.toString();
@@ -79,6 +88,4 @@ public class CardNumberCryptoConverter implements AttributeConverter<String, Str
             throw new EncryptionFailedException("Card decryption failed");
         }
     }
-
 }
-
