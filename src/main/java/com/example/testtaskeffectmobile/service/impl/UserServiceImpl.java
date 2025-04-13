@@ -1,5 +1,6 @@
 package com.example.testtaskeffectmobile.service.impl;
 
+import com.example.testtaskeffectmobile.dto.UserDto;
 import com.example.testtaskeffectmobile.dto.request.BannedRequestDto;
 import com.example.testtaskeffectmobile.dto.request.RegisterUserRequestDto;
 import com.example.testtaskeffectmobile.exception.RoleNotFoundException;
@@ -12,6 +13,8 @@ import com.example.testtaskeffectmobile.repository.UserRepository;
 import com.example.testtaskeffectmobile.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,11 +39,10 @@ public class UserServiceImpl implements UserService {
         log.info("Creating new user entity for: {}", registerUserRequestDto.getEmail());
         User userDB = userMapper.toNewEntity(registerUserRequestDto);
 
-        Role role = roleRepository.findByName(USER_ROLE_NAME)
-                .orElseThrow(() -> {
-                    log.error("Role with name {} wasn't found", USER_ROLE_NAME);
-                    throw new RoleNotFoundException(String.format("Role with name %s wasn't found", USER_ROLE_NAME));
-                });
+        Role role = roleRepository.findByName(USER_ROLE_NAME).orElseThrow(() -> {
+            log.error("Role with name {} wasn't found", USER_ROLE_NAME);
+            throw new RoleNotFoundException(String.format("Role with name %s wasn't found", USER_ROLE_NAME));
+        });
 
         userDB.setPassword(passwordEncoder.encode(userDB.getPassword()));
         userDB.getRoles().add(role);
@@ -62,14 +64,24 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void banUser(UUID id, BannedRequestDto bannedRequestDto) {
-        User user = findById(id);
+        User user = userRepository.findById(id).orElseThrow(() -> {
+            log.error("User with id {} wasn't found", id);
+            throw new UserNotFoundException(String.format("User with id %s wasn't found", id));
+        });
         userRepository.save(user);
         log.info("User was successfully updated, set ban status: {}", bannedRequestDto.getBanned());
     }
 
     @Override
-    public User findById(UUID id) {
+    public Page<UserDto> findAll(PageRequest pageRequest) {
+        return userRepository.findAll(pageRequest)
+                .map(userMapper::toDto);
+    }
+
+    @Override
+    public UserDto findById(UUID id) {
         return userRepository.findById(id)
+                .map(userMapper::toDto)
                 .orElseThrow(() -> {
                     log.error("User with id {} wasn't found", id);
                     throw new UserNotFoundException(String.format("User with id %s wasn't found", id));

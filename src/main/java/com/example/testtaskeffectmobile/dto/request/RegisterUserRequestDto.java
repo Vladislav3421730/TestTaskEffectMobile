@@ -24,15 +24,15 @@ public class RegisterUserRequestDto {
     @NotBlank(message = "LastName cannot be blank.")
     private String lastName;
 
-    @Schema(description = "Password for the new user. Must be at least 6 characters long.", example = "strongpassword123")
-    @Size(min = 6, message = "Password must be at least 6 characters long.")
-    @NotBlank(message = "Password cannot be blank.")
-    private String password;
-
     @Schema(description = "Email address of the new user. Must be a valid email format.", example = "john.doe@example.com")
     @Email(message = "Email must be valid.")
     @NotBlank(message = "Email cannot be blank.")
     private String email;
+
+    @Schema(description = "Password for the new user. Must be at least 6 characters long.", example = "strongpassword123")
+    @Size(min = 6, message = "Password must be at least 6 characters long.")
+    @NotBlank(message = "Password cannot be blank.")
+    private String password;
 
     @Schema(description = "Confirm password to verify the password entered by the user.", example = "strongpassword123")
     @NotBlank(message = "Confirm cannot be blank.")

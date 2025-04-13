@@ -5,6 +5,7 @@ import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
@@ -14,6 +15,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.util.Base64;
 
+@Component
 @Converter
 @Slf4j
 public class CardNumberCryptoConverter implements AttributeConverter<String, String> {
@@ -65,13 +67,18 @@ public class CardNumberCryptoConverter implements AttributeConverter<String, Str
             Cipher cipher = getCipher(Cipher.DECRYPT_MODE, iv);
             String decrypted = new String(cipher.doFinal(encrypted), StandardCharsets.UTF_8);
 
-            int unmaskedLength = 4;
-            int maskLength = Math.max(0, decrypted.length() - unmaskedLength);
-            return "*".repeat(maskLength) + decrypted.substring(maskLength);
+            StringBuilder str = new StringBuilder(decrypted);
+            for(int i=0; i < decrypted.length() - 4; i++) {
+                if(decrypted.charAt(i) != ' ') {
+                    str.replace(i, i+1, "*");
+                }
+            }
+            return str.toString();
         } catch (Exception e) {
             log.error("Failed to decrypt card number", e);
             throw new EncryptionFailedException("Card decryption failed");
         }
     }
+
 }
 

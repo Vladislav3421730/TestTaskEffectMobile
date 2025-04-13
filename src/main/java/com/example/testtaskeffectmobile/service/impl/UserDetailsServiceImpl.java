@@ -2,6 +2,7 @@ package com.example.testtaskeffectmobile.service.impl;
 
 import com.example.testtaskeffectmobile.model.User;
 import com.example.testtaskeffectmobile.repository.UserRepository;
+
 import com.example.testtaskeffectmobile.wrapper.UserDetailsWrapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.DisabledException;
@@ -24,7 +25,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         if (!userDetailsWrapper.isEnabled()) {
             throw new DisabledException("You were banned");
         }
-        return new UserDetailsWrapper(user);
+        return userDetailsWrapper;
     }
 
 }

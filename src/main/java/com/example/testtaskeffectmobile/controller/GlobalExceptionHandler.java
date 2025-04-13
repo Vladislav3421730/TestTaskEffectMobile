@@ -59,4 +59,11 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(new AppErrorDto(encryptionFailedException.getMessage(),400), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(CardStatusException.class)
+    public ResponseEntity<AppErrorDto> handleCardStatusException(CardStatusException cardStatusException) {
+        return new ResponseEntity<>(new AppErrorDto(cardStatusException.getMessage(),400), HttpStatus.BAD_REQUEST);
+    }
+
+
+
 }

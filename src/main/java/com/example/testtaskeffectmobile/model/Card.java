@@ -54,7 +54,7 @@ public class Card {
     private User user;
 
     @PrePersist
-    public void init() {
+    void init() {
         balance = BigDecimal.ZERO;
         status = CardStatus.ACTIVE;
         expirationDate = LocalDate.now().plusYears(4);
