@@ -26,4 +26,6 @@ card:
   secret-key: 32882AYUGUUYDUYH
   algorithm: AES/CBC/PKCS5Padding
   iv-length: 16
+  encryption: AES
+  hashing: SHA-256
 

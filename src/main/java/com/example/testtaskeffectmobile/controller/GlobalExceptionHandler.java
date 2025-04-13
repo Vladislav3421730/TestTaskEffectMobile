@@ -74,6 +74,13 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(new AppErrorDto(cardBalanceException.getMessage(),400), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(CardLimitException.class)
+    public ResponseEntity<AppErrorDto> handleCardLimitException(CardLimitException cardLimitException) {
+        return new ResponseEntity<>(new AppErrorDto(cardLimitException.getMessage(),400), HttpStatus.BAD_REQUEST);
+    }
+
+
+
 
 
 }

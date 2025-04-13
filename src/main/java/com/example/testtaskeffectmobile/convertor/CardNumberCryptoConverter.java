@@ -28,8 +28,14 @@ public class CardNumberCryptoConverter implements AttributeConverter<String, Str
     @Value("${card.iv-length}")
     private Integer IV_LENGTH;
 
+    @Value("${card.encryption}")
+    private String ENCRYPTION_ALGORITHM;
+
+    @Value("${card.hashing}")
+    private String HASHING_ALGORITHM;
+
     private Cipher getCipher(int mode, byte[] ivBytes) throws Exception {
-        SecretKeySpec keySpec = new SecretKeySpec(SECRET_KEY.getBytes(StandardCharsets.UTF_8), "AES");
+        SecretKeySpec keySpec = new SecretKeySpec(SECRET_KEY.getBytes(StandardCharsets.UTF_8), ENCRYPTION_ALGORITHM);
         IvParameterSpec iv = new IvParameterSpec(ivBytes);
         Cipher cipher = Cipher.getInstance(ALGORITHM);
         cipher.init(mode, keySpec, iv);
@@ -37,7 +43,7 @@ public class CardNumberCryptoConverter implements AttributeConverter<String, Str
     }
 
     private byte[] generateDeterministicIv(String input) throws Exception {
-        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        MessageDigest digest = MessageDigest.getInstance(HASHING_ALGORITHM);
         byte[] hash = digest.digest(input.getBytes(StandardCharsets.UTF_8));
         byte[] iv = new byte[IV_LENGTH];
         System.arraycopy(hash, 0, iv, 0, IV_LENGTH);
@@ -74,15 +80,8 @@ public class CardNumberCryptoConverter implements AttributeConverter<String, Str
             byteBuffer.get(encrypted);
 
             Cipher cipher = getCipher(Cipher.DECRYPT_MODE, iv);
-            String decrypted = new String(cipher.doFinal(encrypted), StandardCharsets.UTF_8);
 
-            StringBuilder str = new StringBuilder(decrypted);
-            for (int i = 0; i < decrypted.length() - 4; i++) {
-                if (decrypted.charAt(i) != ' ') {
-                    str.replace(i, i + 1, "*");
-                }
-            }
-            return str.toString();
+            return new String(cipher.doFinal(encrypted), StandardCharsets.UTF_8);
         } catch (Exception e) {
             log.error("Failed to decrypt card number", e);
             throw new EncryptionFailedException("Card decryption failed");

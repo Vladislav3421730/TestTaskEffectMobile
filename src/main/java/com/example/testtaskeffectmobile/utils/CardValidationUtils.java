@@ -1,6 +1,7 @@
 package com.example.testtaskeffectmobile.utils;
 
-import com.example.testtaskeffectmobile.dto.CardDto;
+import com.example.testtaskeffectmobile.exception.CardBalanceException;
+import com.example.testtaskeffectmobile.exception.CardLimitException;
 import com.example.testtaskeffectmobile.exception.CardStatusException;
 import com.example.testtaskeffectmobile.factory.TransactionFactory;
 import com.example.testtaskeffectmobile.model.Card;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Optional;
 
 @Component
 @Slf4j
@@ -25,8 +27,7 @@ public class CardValidationUtils {
     private final CardRepository cardRepository;
     private final TransactionRepository transactionRepository;
 
-
-    public void validate(Card card, BigDecimal amount, OperationType operationType) {
+    public void validateStatus(Card card, BigDecimal amount, OperationType operationType) {
         if (card.getStatus().equals(CardStatus.BLOCKED)) {
             log.error("Operation forbidden, card with id {} was blocked", card.getId());
 
@@ -45,6 +46,45 @@ public class CardValidationUtils {
 
             throw new CardStatusException(String.format("Operation forbidden, card with id %s was expired at %s", card.getId(), card.getExpirationDate()));
         }
+    }
+
+    public void validateBalance(Card card, BigDecimal amount, OperationType operationType) {
+        if (card.getBalance().compareTo(amount) < 0) {
+            Transaction failedTransaction = TransactionFactory
+                    .create(card, amount, operationType, OperationResult.FAILED);
+            transactionRepository.save(failedTransaction);
+            log.error("Amount {} more than balance {}", amount, card.getBalance());
+            throw new CardBalanceException(String.format("Amount %s more than balance %s", amount, card.getBalance()));
+        }
+    }
+
+    public void validateLimit(Card card, BigDecimal amount, OperationType operationType) {
+        Optional<BigDecimal> dayAmount = cardRepository.findTodayWithdrawalsByCardId(card.getId());
+
+        if (dayAmount.isPresent() &&
+                dayAmount.get().add(amount).compareTo(card.getLimit().getDailyLimit()) > 0) {
+            Transaction failedTransaction = TransactionFactory
+                    .create(card, amount, operationType, OperationResult.FAILED);
+            transactionRepository.save(failedTransaction);
+            log.error("Amount {} and day's withdrawal {} more than limit this day {}",
+                    amount, dayAmount, card.getLimit().getCard());
+            throw new CardLimitException(String.format("Amount %s and day's withdrawal %s more than limit this day %s",
+                    amount, dayAmount, card.getLimit().getCard()));
+        }
+
+        Optional<BigDecimal> monthAmount = cardRepository.findTotalWithdrawalsForCurrentMonthByCardId(card.getId());
+
+        if (monthAmount.isPresent() &&
+                monthAmount.get().add(amount).compareTo(card.getLimit().getDailyLimit()) > 0) {
+            Transaction failedTransaction = TransactionFactory
+                    .create(card, amount, operationType, OperationResult.FAILED);
+            transactionRepository.save(failedTransaction);
+            log.error("Amount {} and month withdrawal {} more than limit this mont {}",
+                    amount, dayAmount, card.getLimit().getCard());
+            throw new CardLimitException(String.format("Amount %s and month withdrawal %s more than limit this month %s",
+                    amount, dayAmount, card.getLimit().getCard()));
+        }
+
     }
 
 }

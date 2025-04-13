@@ -16,6 +16,16 @@ public interface CardMapper {
     @Mapping(source = "user", target = "userId")
     CardDto toDto(Card card);
 
+    default String mapNumberFromCardToCardDto(String decrypted) {
+        StringBuilder str = new StringBuilder(decrypted);
+        for (int i = 0; i < decrypted.length() - 4; i++) {
+            if (decrypted.charAt(i) != ' ') {
+                str.replace(i, i + 1, "*");
+            }
+        }
+        return str.toString();
+    }
+
     default UUID mapFromUserToUserId(User user) {
         return user.getId();
     }

@@ -7,11 +7,10 @@ import lombok.Data;
 import java.math.BigDecimal;
 
 @Data
-public class WithdrawalRequestDto {
-
+public class RechargeRequestDto {
     @CardNumber
     private String number;
 
-    @DecimalMin(value = "5.00", message = "Minimum withdrawal amount is 5")
+    @DecimalMin(value = "5.00", message = "Minimum recharge amount is 5")
     private BigDecimal amount;
 }
