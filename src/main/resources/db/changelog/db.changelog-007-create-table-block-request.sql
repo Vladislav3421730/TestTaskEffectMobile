@@ -1,3 +1,4 @@
+-- changeset block_status:007
 CREATE TYPE block_status AS ENUM ('CREATED', 'COMPLETED','REJECTED');
 
 CREATE TABLE block_request
@@ -10,5 +11,4 @@ CREATE TABLE block_request
     updated_at TIMESTAMP        DEFAULT now(),
     CONSTRAINT fk_card_block_request FOREIGN KEY (card_id) REFERENCES public.card (id) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT fk_users_block_request FOREIGN KEY (user_id) REFERENCES public.users (id) ON DELETE CASCADE ON UPDATE CASCADE
-
 );

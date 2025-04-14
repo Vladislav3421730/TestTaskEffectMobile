@@ -1,5 +1,6 @@
 package com.example.testtaskeffectmobile.utils;
 
+import com.example.testtaskeffectmobile.model.Role;
 import com.example.testtaskeffectmobile.model.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -33,7 +34,7 @@ public class JwtAccessTokenUtils {
     public String generateAccessToken(User user) {
         Map<String, Object> claims = new HashMap<>();
         List<String> rolesList = user.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority(role.getName()).getAuthority())
+                .map(Role::getAuthority)
                 .toList();
 
         claims.put("roles", rolesList);

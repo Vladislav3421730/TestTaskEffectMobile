@@ -10,5 +10,6 @@
     <include file="classpath:db/changelog/db.changelog-004-create-table-card.sql"/>
     <include file="classpath:db/changelog/db.changelog-005-create-table-transaction.sql"/>
     <include file="classpath:db/changelog/db.changelog-006-create-table-limit.sql"/>
-    <include file="classpath:db/changelog/db.changelog-007-insert-data.sql"/>
+    <include file="classpath:db/changelog/db.changelog-007-create-table-block-request.sql"/>
+    <include file="classpath:db/changelog/db.changelog-008-insert-data.sql"/>
 </databaseChangeLog>

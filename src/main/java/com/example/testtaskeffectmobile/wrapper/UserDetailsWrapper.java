@@ -16,13 +16,12 @@ import java.util.Collection;
 @Getter
 @Setter
 public class UserDetailsWrapper implements UserDetails {
+
     private User user;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return user.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority(role.getName()))
-                .toList();
+        return user.getRoles();
     }
 
     @Override

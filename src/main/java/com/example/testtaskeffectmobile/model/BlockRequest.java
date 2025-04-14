@@ -1,6 +1,6 @@
 package com.example.testtaskeffectmobile.model;
 
-import com.example.testtaskeffectmobile.model.enums.BlockStatus;
+import com.example.testtaskeffectmobile.model.enums.BlockStatusType;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.JdbcType;
@@ -27,7 +27,7 @@ public class BlockRequest {
     @Enumerated
     @JdbcType(PostgreSQLEnumJdbcType.class)
     @Column(name = "status", nullable = false)
-    private BlockStatus blockStatus;
+    private BlockStatusType blockStatusType;
 
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
@@ -37,7 +37,7 @@ public class BlockRequest {
     void init() {
         createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
-        blockStatus = BlockStatus.CREATED;
+        blockStatusType = BlockStatusType.CREATED;
     }
 
     @ManyToOne(fetch = FetchType.LAZY)

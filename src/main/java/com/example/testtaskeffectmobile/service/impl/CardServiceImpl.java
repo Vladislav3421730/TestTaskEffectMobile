@@ -80,7 +80,7 @@ public class CardServiceImpl implements CardService {
     public void updateStatus(UUID id, StatusCardRequestDto status) {
         Card card = cardRepository.findById(id).orElseThrow(() -> {
             log.error("Card with id {} wasn't founded", id);
-            throw new CardNotFoundException(String.format("Card with if %s wasn't found", id));
+            throw new CardNotFoundException(String.format("Card with id %s wasn't found", id));
         });
         card.setStatus(CardStatus.valueOf(status.getStatus()));
         cardRepository.save(card);
@@ -106,7 +106,7 @@ public class CardServiceImpl implements CardService {
                 .map(cardMapper::toDto)
                 .orElseThrow(() -> {
                     log.error("Card with id {} wasn't founded", id);
-                    throw new CardNotFoundException(String.format("Card with if %s wasn't found", id));
+                    throw new CardNotFoundException(String.format("Card with id %s wasn't found", id));
                 });
     }
 

@@ -1,4 +1,4 @@
--- changeset admin:007
+-- changeset insert:008
 INSERT INTO role (name) VALUES
-    ('USER'),
-    ('ADMIN');
+    ('ROLE_USER'),
+    ('ROLE_ADMIN');

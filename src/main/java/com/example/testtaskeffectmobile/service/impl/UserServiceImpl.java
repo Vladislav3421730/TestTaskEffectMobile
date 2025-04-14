@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
 
-    private static final String USER_ROLE_NAME = "USER";
+    private static final String USER_ROLE_NAME = "ROLE_USER";
 
     @Override
     @Transactional
