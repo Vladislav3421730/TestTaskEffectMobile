@@ -21,20 +21,20 @@ public interface CardRepository extends JpaRepository<Card, UUID> {
     @Query(value = """
             SELECT SUM(t.amount)
             FROM transaction t
-            WHERE t.operation = 'WITHDRAWAL' AND DATE(t.timestamp) = CURRENT_DATE AND t.card_id = :cardId""",
+            WHERE t.operation = 'WITHDRAWAL' AND t.operation_result = 'SUCCESSFULLY'
+             AND DATE(t.timestamp) = CURRENT_DATE AND t.card_id = :cardId""",
             nativeQuery = true)
     Optional<BigDecimal> findTodayWithdrawalsByCardId(@Param("cardId") UUID cardId);
 
     @Query(value = """
-        SELECT SUM(t.amount)
-        FROM transaction t
-        WHERE t.operation = 'WITHDRAWAL' 
-        AND EXTRACT(MONTH FROM t.timestamp) = EXTRACT(MONTH FROM CURRENT_DATE)
-        AND EXTRACT(YEAR FROM t.timestamp) = EXTRACT(YEAR FROM CURRENT_DATE)
-        AND t.card_id = :cardId""",
+            SELECT SUM(t.amount)
+            FROM transaction t
+            WHERE t.operation = 'WITHDRAWAL' AND t.operation_result = 'SUCCESSFULLY'
+            AND EXTRACT(MONTH FROM t.timestamp) = EXTRACT(MONTH FROM CURRENT_DATE)
+            AND EXTRACT(YEAR FROM t.timestamp) = EXTRACT(YEAR FROM CURRENT_DATE)
+            AND t.card_id = :cardId""",
             nativeQuery = true)
     Optional<BigDecimal> findTotalWithdrawalsForCurrentMonthByCardId(@Param("cardId") UUID cardId);
-
 
 
 }

@@ -17,7 +17,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, UUID> 
 
     Page<Transaction> findByCardUserEmail(String email, PageRequest pageRequest);
 
-    Page<Transaction> findByOperation(OperationType operationType, PageRequest pageRequest);
+    Page<Transaction> findByCardUserEmailAndCardId(String email, UUID id, PageRequest pageRequest);
 
 
 }

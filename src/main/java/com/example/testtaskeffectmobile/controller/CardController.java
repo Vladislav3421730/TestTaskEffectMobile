@@ -19,7 +19,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.security.Principal;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @RestController
@@ -46,13 +48,16 @@ public class CardController {
             )
     })
     public ResponseEntity<Page<CardDto>> findAll(
-            @RequestParam(value = "page", required = false) Integer page,
-            @RequestParam(value = "pageSize", required = false) Integer pageSize) {
-        if (page == null) page = 0;
-        if (pageSize == null) pageSize = 20;
-        Page<CardDto> cards = cardService.findAll(PageRequest.of(page, pageSize));
+            @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
+            @RequestParam(value = "pageSize", required = false, defaultValue = "20") Integer pageSize,
+            @RequestParam(value = "minBalance", required = false) BigDecimal minBalance,
+            @RequestParam(value = "maxBalance", required = false) BigDecimal maxBalance,
+            @RequestParam(value = "expiredBefore", required = false) LocalDate expiredBefore,
+            @RequestParam(value = "expiredAfter", required = false) LocalDate expiredAfter) {
+        Page<CardDto> cards = cardService.findAll(PageRequest.of(page, pageSize), minBalance, maxBalance, expiredBefore, expiredAfter);
         return ResponseEntity.ok(cards);
     }
+
 
     @GetMapping("/me")
     @Operation(summary = "Find all cards for authorized user")
@@ -119,10 +124,9 @@ public class CardController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppErrorDto.class))
             )
     })
-    public ResponseEntity<Void> saveCard(
-            @RequestBody @Valid AddCardRequestDto addCardRequestDto) {
-        cardService.save(addCardRequestDto);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ResponseEntity<CardDto> saveCard(@RequestBody @Valid AddCardRequestDto addCardRequestDto) {
+        CardDto cardDto = cardService.save(addCardRequestDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(cardDto);
     }
 
     @DeleteMapping("/{id}")

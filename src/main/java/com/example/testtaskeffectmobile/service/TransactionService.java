@@ -1,10 +1,6 @@
 package com.example.testtaskeffectmobile.service;
 
 import com.example.testtaskeffectmobile.dto.TransactionDto;
-import com.example.testtaskeffectmobile.dto.request.RechargeRequestDto;
-import com.example.testtaskeffectmobile.dto.request.WithdrawalRequestDto;
-import com.example.testtaskeffectmobile.dto.responce.RechargeResponseDto;
-import com.example.testtaskeffectmobile.dto.responce.WithdrawalResponseDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
@@ -17,9 +13,7 @@ public interface TransactionService {
 
     Page<TransactionDto> findAllByUserId(UUID id, PageRequest pageRequest);
 
+    Page<TransactionDto> findAllByUserEmail(String email, PageRequest pageRequest);
 
-    WithdrawalResponseDto withdrawal(String email, WithdrawalRequestDto withdrawalRequestDto);
-
-    RechargeResponseDto recharge(String email, RechargeRequestDto rechargeRequestDto);
-
+    Page<TransactionDto> findAllByUserEmailAndCardId(String email, UUID id, PageRequest pageRequest);
 }

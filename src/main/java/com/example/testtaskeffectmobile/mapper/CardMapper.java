@@ -4,9 +4,12 @@ import com.example.testtaskeffectmobile.dto.CardDto;
 import com.example.testtaskeffectmobile.model.Card;
 import com.example.testtaskeffectmobile.model.User;
 import com.example.testtaskeffectmobile.model.enums.CardStatus;
+import com.example.testtaskeffectmobile.validation.CardNumber;
+import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
+import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 

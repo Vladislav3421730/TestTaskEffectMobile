@@ -11,6 +11,6 @@ public class RechargeRequestDto {
     @CardNumber
     private String number;
 
-    @DecimalMin(value = "5.00", message = "Minimum recharge amount is 5")
+    @DecimalMin(value = "5.00", message = "Minimum recharge amount is 5.00")
     private BigDecimal amount;
 }

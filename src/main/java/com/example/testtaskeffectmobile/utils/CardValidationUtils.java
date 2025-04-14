@@ -67,22 +67,22 @@ public class CardValidationUtils {
                     .create(card, amount, operationType, OperationResult.FAILED);
             transactionRepository.save(failedTransaction);
             log.error("Amount {} and day's withdrawal {} more than limit this day {}",
-                    amount, dayAmount, card.getLimit().getCard());
+                    amount, dayAmount.get(), card.getLimit().getDailyLimit());
             throw new CardLimitException(String.format("Amount %s and day's withdrawal %s more than limit this day %s",
-                    amount, dayAmount, card.getLimit().getCard()));
+                    amount, dayAmount.get(), card.getLimit().getDailyLimit()));
         }
 
         Optional<BigDecimal> monthAmount = cardRepository.findTotalWithdrawalsForCurrentMonthByCardId(card.getId());
 
         if (monthAmount.isPresent() &&
-                monthAmount.get().add(amount).compareTo(card.getLimit().getDailyLimit()) > 0) {
+                monthAmount.get().add(amount).compareTo(card.getLimit().getMonthlyLimit()) > 0) {
             Transaction failedTransaction = TransactionFactory
                     .create(card, amount, operationType, OperationResult.FAILED);
             transactionRepository.save(failedTransaction);
-            log.error("Amount {} and month withdrawal {} more than limit this mont {}",
-                    amount, dayAmount, card.getLimit().getCard());
+            log.error("Amount {} and month withdrawal {} more than limit this month {}",
+                    amount, monthAmount.get(), card.getLimit().getMonthlyLimit());
             throw new CardLimitException(String.format("Amount %s and month withdrawal %s more than limit this month %s",
-                    amount, dayAmount, card.getLimit().getCard()));
+                    amount, monthAmount.get(), card.getLimit().getMonthlyLimit()));
         }
 
     }

@@ -61,7 +61,6 @@ public class CardNumberCryptoConverter implements AttributeConverter<String, Str
                     .put(iv)
                     .put(encrypted)
                     .array();
-
             return Base64.getEncoder().encodeToString(encryptedWithIv);
         } catch (Exception e) {
             log.error("Failed to encrypt card number", e);
@@ -80,7 +79,6 @@ public class CardNumberCryptoConverter implements AttributeConverter<String, Str
             byteBuffer.get(encrypted);
 
             Cipher cipher = getCipher(Cipher.DECRYPT_MODE, iv);
-
             return new String(cipher.doFinal(encrypted), StandardCharsets.UTF_8);
         } catch (Exception e) {
             log.error("Failed to decrypt card number", e);
