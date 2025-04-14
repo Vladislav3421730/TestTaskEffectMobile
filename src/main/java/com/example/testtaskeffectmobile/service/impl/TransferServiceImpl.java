@@ -68,7 +68,7 @@ public class TransferServiceImpl implements TransferService {
     }
 
     @Override
-    @Transactional(noRollbackFor = {CardBalanceException.class, CardStatusException.class})
+    @Transactional(noRollbackFor = {CardStatusException.class})
     public RechargeResponseDto recharge(String email, RechargeRequestDto rechargeRequestDto) {
 
         String cardNumber = rechargeRequestDto.getNumber();
@@ -106,10 +106,11 @@ public class TransferServiceImpl implements TransferService {
 
         Card card = findCardByUserEmailAndNumber(email, cardNumber);
         cardValidationUtils.validateStatus(card, transferAmount, OperationType.TRANSFER);
-        cardValidationUtils.validateBalance(card, transferAmount, OperationType.TRANSFER);
 
         Card targetCard = findCardByUserEmailAndNumber(email, targetCardNumber);
         cardValidationUtils.validateStatus(targetCard, transferAmount, OperationType.TRANSFER);
+
+        cardValidationUtils.validateBalanceForTransfer(card, targetCard, transferAmount, OperationType.TRANSFER);
 
         card.setBalance(card.getBalance().subtract(transferAmount));
         targetCard.setBalance(targetCard.getBalance().add(transferAmount));
@@ -118,7 +119,7 @@ public class TransferServiceImpl implements TransferService {
         cardRepository.save(targetCard);
 
         Transaction transaction = TransactionFactory
-                .create(card, transferAmount, OperationType.TRANSFER, OperationResult.SUCCESSFULLY);
+                .create(card, targetCard, transferAmount, OperationType.TRANSFER, OperationResult.SUCCESSFULLY);
         transactionRepository.save(transaction);
 
         return TransferResponseDto.builder()

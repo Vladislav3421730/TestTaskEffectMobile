@@ -2,6 +2,7 @@ package com.example.testtaskeffectmobile.controller;
 
 import com.example.testtaskeffectmobile.dto.UserDto;
 import com.example.testtaskeffectmobile.dto.error.AppErrorDto;
+import com.example.testtaskeffectmobile.dto.error.FieldErrorDto;
 import com.example.testtaskeffectmobile.dto.request.BannedRequestDto;
 import com.example.testtaskeffectmobile.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -88,7 +89,7 @@ public class UserController {
             @ApiResponse(
                     responseCode = "400",
                     description = "Invalid request body",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppErrorDto.class))
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = FieldErrorDto.class))
             ),
             @ApiResponse(
                     responseCode = "404",

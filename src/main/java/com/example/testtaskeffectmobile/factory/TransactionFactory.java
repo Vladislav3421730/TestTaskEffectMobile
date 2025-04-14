@@ -9,15 +9,28 @@ import java.math.BigDecimal;
 
 public class TransactionFactory {
 
-    public static Transaction create(
-            Card card,
-            BigDecimal amount,
-            OperationType operationType,
-            OperationResult operationResult) {
+    public static Transaction create(Card card,
+                                     BigDecimal amount,
+                                     OperationType operationType,
+                                     OperationResult operationResult) {
         return Transaction.builder()
                 .card(card)
                 .operation(operationType)
                 .operationResult(operationResult)
+                .amount(amount)
+                .build();
+    }
+
+    public static Transaction create(Card card,
+                                     Card targetCard,
+                                     BigDecimal amount,
+                                     OperationType operationType,
+                                     OperationResult operationResult) {
+        return Transaction.builder()
+                .card(card)
+                .operation(operationType)
+                .operationResult(operationResult)
+                .targetCard(targetCard)
                 .amount(amount)
                 .build();
     }

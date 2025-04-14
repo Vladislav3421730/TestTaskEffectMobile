@@ -18,13 +18,17 @@ import com.example.testtaskeffectmobile.model.Transaction;
 import com.example.testtaskeffectmobile.model.enums.OperationResult;
 import com.example.testtaskeffectmobile.model.enums.OperationType;
 import com.example.testtaskeffectmobile.repository.CardRepository;
+import com.example.testtaskeffectmobile.repository.CustomTransactionRepository;
 import com.example.testtaskeffectmobile.repository.TransactionRepository;
+import com.example.testtaskeffectmobile.repository.TransactionRepositoryCustomImpl;
 import com.example.testtaskeffectmobile.service.TransactionService;
 import com.example.testtaskeffectmobile.utils.CardValidationUtils;
+import com.example.testtaskeffectmobile.utils.EnumValidation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,11 +43,22 @@ import java.util.UUID;
 public class TransactionServiceImpl implements TransactionService {
 
     private final TransactionRepository transactionRepository;
+    private final CustomTransactionRepository customTransactionRepository;
     private final TransactionMapper transactionMapper;
 
-    @Override
-    public Page<TransactionDto> findAll(PageRequest pageRequest) {
-        return transactionRepository.findAll(pageRequest)
+
+    public Page<TransactionDto> findAll(Pageable pageable, BigDecimal minAmount, BigDecimal maxAmount,
+                                        String operation, String operationResult) {
+
+        OperationType operationTypeEnum = EnumValidation.safeParseEnum(OperationType.class, operation);
+        OperationResult operationResultEnum = EnumValidation.safeParseEnum(OperationResult.class, operationResult);
+
+        return customTransactionRepository.findByFilters(
+                        minAmount,
+                        maxAmount,
+                        operationTypeEnum,
+                        operationResultEnum,
+                        pageable)
                 .map(transactionMapper::toDto);
     }
 

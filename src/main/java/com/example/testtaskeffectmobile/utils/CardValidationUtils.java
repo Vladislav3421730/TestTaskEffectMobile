@@ -58,6 +58,16 @@ public class CardValidationUtils {
         }
     }
 
+    public void validateBalanceForTransfer(Card card, Card targetCard, BigDecimal amount, OperationType operationType) {
+        if (card.getBalance().compareTo(amount) < 0) {
+            Transaction failedTransaction = TransactionFactory
+                    .create(card, targetCard, amount, operationType, OperationResult.FAILED);
+            transactionRepository.save(failedTransaction);
+            log.error("Amount {} more than balance {}", amount, card.getBalance());
+            throw new CardBalanceException(String.format("Amount %s more than balance %s", amount, card.getBalance()));
+        }
+    }
+
     public void validateLimit(Card card, BigDecimal amount, OperationType operationType) {
         Optional<BigDecimal> dayAmount = cardRepository.findTodayWithdrawalsByCardId(card.getId());
 
