@@ -33,7 +33,11 @@ public class SecurityConfig {
                 .cors(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/api/v1/transaction/**").authenticated()
+                        .requestMatchers("/api/v1/cards/me", "/api/v1/transactions/me/**").authenticated()
+                        .requestMatchers("/api/v1/transactions/transfer","/api/v1/transactions/recharge").authenticated()
+                        .requestMatchers("/api/v1/transactions/withdrawal" ).authenticated()
+                        .requestMatchers("/api/v1/users/**", "/api/v1/limit/**", "/api/v1/cards/**").hasRole("ADMIN")
+                        .requestMatchers("/api/v1/transaction/**").hasRole("ADMIN")
                         .anyRequest().permitAll())
                 .sessionManagement((sessionManagement) -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(ex -> ex
