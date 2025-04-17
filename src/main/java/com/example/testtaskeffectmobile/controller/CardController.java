@@ -30,6 +30,11 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Tag(name = "Cards", description = "Endpoints for managing cards (create, delete, get, update status)")
 @SecurityRequirement(name = "Bearer Authentication")
+@ApiResponse(
+        responseCode = "401",
+        description = "Unauthorized",
+        content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppErrorDto.class))
+)
 public class CardController {
 
     private final CardService cardService;
@@ -38,11 +43,6 @@ public class CardController {
     @Operation(summary = "Find all cards")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "List of cards returned successfully"),
-            @ApiResponse(
-                    responseCode = "401",
-                    description = "Unauthorized",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppErrorDto.class))
-            ),
             @ApiResponse(
                     responseCode = "403",
                     description = "Forbidden",
@@ -63,20 +63,11 @@ public class CardController {
 
     @GetMapping("/me")
     @Operation(summary = "Find all cards for authorized user")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "List of cards returned successfully"),
-            @ApiResponse(
-                    responseCode = "401",
-                    description = "Unauthorized",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppErrorDto.class))
-            )
-    })
+    @ApiResponse(responseCode = "200", description = "List of cards returned successfully")
     public ResponseEntity<Page<CardDto>> findAllUserCards(
             Principal principal,
-            @RequestParam(value = "page", required = false) Integer page,
-            @RequestParam(value = "pageSize", required = false) Integer pageSize) {
-        if (page == null) page = 0;
-        if (pageSize == null) pageSize = 20;
+            @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
+            @RequestParam(value = "pageSize", required = false, defaultValue = "20") Integer pageSize) {
         Page<CardDto> cards = cardService.findAllByUserEmail(principal.getName(), PageRequest.of(page, pageSize));
         return ResponseEntity.ok(cards);
     }
@@ -88,11 +79,6 @@ public class CardController {
             @ApiResponse(
                     responseCode = "404",
                     description = "Card not found",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppErrorDto.class))
-            ),
-            @ApiResponse(
-                    responseCode = "401",
-                    description = "Unauthorized",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppErrorDto.class))
             ),
             @ApiResponse(
@@ -116,11 +102,6 @@ public class CardController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppErrorDto.class))
             ),
             @ApiResponse(
-                    responseCode = "401",
-                    description = "Unauthorized",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppErrorDto.class))
-            ),
-            @ApiResponse(
                     responseCode = "403",
                     description = "Forbidden",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppErrorDto.class))
@@ -138,11 +119,6 @@ public class CardController {
             @ApiResponse(
                     responseCode = "404",
                     description = "Card not found",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppErrorDto.class))
-            ),
-            @ApiResponse(
-                    responseCode = "401",
-                    description = "Unauthorized",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppErrorDto.class))
             ),
             @ApiResponse(
@@ -167,11 +143,6 @@ public class CardController {
             @ApiResponse(
                     responseCode = "404",
                     description = "Card not found",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppErrorDto.class))
-            ),
-            @ApiResponse(
-                    responseCode = "401",
-                    description = "Unauthorized",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppErrorDto.class))
             ),
             @ApiResponse(

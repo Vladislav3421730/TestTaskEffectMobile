@@ -33,6 +33,11 @@ import java.util.UUID;
 @RequestMapping("/api/v1/transaction")
 @Tag(name = "Transaction Management", description = "Endpoints for viewing and managing user transactions")
 @SecurityRequirement(name = "Bearer Authentication")
+@ApiResponse(
+        responseCode = "401",
+        description = "Unauthorized",
+        content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppErrorDto.class))
+)
 public class TransactionController {
 
     private final TransactionService transactionService;
@@ -42,11 +47,6 @@ public class TransactionController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Successfully find all transactions"),
             @ApiResponse(
-                    responseCode = "401",
-                    description = "Unauthorized",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppErrorDto.class))
-            ),
-            @ApiResponse(
                     responseCode = "403",
                     description = "Forbidden",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppErrorDto.class))
@@ -54,15 +54,12 @@ public class TransactionController {
     })
     @Operation(summary = "Get all transactions", description = "Retrieve a paginated list of all transactions")
     public ResponseEntity<Page<TransactionDto>> findAll(
-            @RequestParam(value = "page", required = false) Integer page,
-            @RequestParam(value = "pageSize", required = false) Integer pageSize,
+            @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
+            @RequestParam(value = "pageSize", required = false, defaultValue = "20") Integer pageSize,
             @RequestParam(value = "minAmount", required = false) BigDecimal minAmount,
             @RequestParam(value = "maxAmount", required = false) BigDecimal maxAmount,
             @RequestParam(value = "operation", required = false) String operation,
-            @RequestParam(value = "operationResult", required = false) String operationResult
-    ) {
-        if (page == null) page = 0;
-        if (pageSize == null) pageSize = 20;
+            @RequestParam(value = "operationResult", required = false) String operationResult) {
         Page<TransactionDto> transactions = transactionService.findAll(PageRequest.of(page, pageSize),
                 minAmount,
                 maxAmount,
@@ -75,11 +72,6 @@ public class TransactionController {
     @GetMapping("/{cardId}")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Successfully find transaction"),
-            @ApiResponse(
-                    responseCode = "401",
-                    description = "Unauthorized",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppErrorDto.class))
-            ),
             @ApiResponse(
                     responseCode = "403",
                     description = "Forbidden",
@@ -95,10 +87,8 @@ public class TransactionController {
     @Operation(summary = "Get transactions by card ID", description = "Retrieve transactions associated with a specific card ID")
     public ResponseEntity<Page<TransactionDto>> findAllByCardId(
             @PathVariable UUID cardId,
-            @RequestParam(value = "page", required = false) Integer page,
-            @RequestParam(value = "pageSize", required = false) Integer pageSize) {
-        if (page == null) page = 0;
-        if (pageSize == null) pageSize = 20;
+            @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
+            @RequestParam(value = "pageSize", required = false, defaultValue = "20") Integer pageSize) {
         Page<TransactionDto> transactions = transactionService.findAllByCardId(cardId, PageRequest.of(page, pageSize));
         return ResponseEntity.ok(transactions);
     }
@@ -106,11 +96,6 @@ public class TransactionController {
     @GetMapping("/{userId}/user")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Successfully find transaction"),
-            @ApiResponse(
-                    responseCode = "401",
-                    description = "Unauthorized",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppErrorDto.class))
-            ),
             @ApiResponse(
                     responseCode = "403",
                     description = "Forbidden",
@@ -125,31 +110,19 @@ public class TransactionController {
     @Operation(summary = "Get transactions by user ID", description = "Retrieve transactions associated with a specific user ID")
     public ResponseEntity<Page<TransactionDto>> findAllByUserId(
             @PathVariable UUID userId,
-            @RequestParam(value = "page", required = false) Integer page,
-            @RequestParam(value = "pageSize", required = false) Integer pageSize) {
-        if (page == null) page = 0;
-        if (pageSize == null) pageSize = 20;
+            @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
+            @RequestParam(value = "pageSize", required = false, defaultValue = "20") Integer pageSize) {
         Page<TransactionDto> transactions = transactionService.findAllByUserId(userId, PageRequest.of(page, pageSize));
         return ResponseEntity.ok(transactions);
     }
 
     @GetMapping("/me")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Successfully find transaction"),
-            @ApiResponse(
-                    responseCode = "401",
-                    description = "Unauthorized",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppErrorDto.class))
-            ),
-
-    })
+    @ApiResponse(responseCode = "200", description = "Successfully find transaction")
     @Operation(summary = "Get current user's transactions", description = "Retrieve transactions of the currently authenticated user")
     public ResponseEntity<Page<TransactionDto>> findAllUsersTransactions(
             Principal principal,
-            @RequestParam(value = "page", required = false) Integer page,
-            @RequestParam(value = "pageSize", required = false) Integer pageSize) {
-        if (page == null) page = 0;
-        if (pageSize == null) pageSize = 20;
+            @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
+            @RequestParam(value = "pageSize", required = false, defaultValue = "20") Integer pageSize) {
         Page<TransactionDto> transactions = transactionService.findAllByUserEmail(principal.getName(), PageRequest.of(page, pageSize));
         return ResponseEntity.ok(transactions);
     }
@@ -157,11 +130,6 @@ public class TransactionController {
     @GetMapping("/me/{cardId}")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Successfully find transaction"),
-            @ApiResponse(
-                    responseCode = "401",
-                    description = "Unauthorized",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppErrorDto.class))
-            ),
             @ApiResponse(
                     responseCode = "404",
                     description = "Transactions not found",
@@ -172,10 +140,8 @@ public class TransactionController {
     public ResponseEntity<Page<TransactionDto>> findAllUsersTransactionsByCardId(
             Principal principal,
             @PathVariable UUID cardId,
-            @RequestParam(value = "page", required = false) Integer page,
-            @RequestParam(value = "pageSize", required = false) Integer pageSize) {
-        if (page == null) page = 0;
-        if (pageSize == null) pageSize = 20;
+            @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
+            @RequestParam(value = "pageSize", required = false, defaultValue = "20") Integer pageSize) {
         Page<TransactionDto> transactions = transactionService
                 .findAllByUserEmailAndCardId(principal.getName(), cardId, PageRequest.of(page, pageSize));
         return ResponseEntity.ok(transactions);
@@ -184,11 +150,6 @@ public class TransactionController {
     @PostMapping("/withdrawal")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Successfully find transaction"),
-            @ApiResponse(
-                    responseCode = "401",
-                    description = "Unauthorized",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppErrorDto.class))
-            ),
             @ApiResponse(
                     responseCode = "404",
                     description = "Card not found",
@@ -212,11 +173,6 @@ public class TransactionController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Successfully find transaction"),
             @ApiResponse(
-                    responseCode = "401",
-                    description = "Unauthorized",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppErrorDto.class))
-            ),
-            @ApiResponse(
                     responseCode = "404",
                     description = "Card not found",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppErrorDto.class))
@@ -238,11 +194,6 @@ public class TransactionController {
     @PostMapping("/transfer")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Successfully find transaction"),
-            @ApiResponse(
-                    responseCode = "401",
-                    description = "Unauthorized",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppErrorDto.class))
-            ),
             @ApiResponse(
                     responseCode = "404",
                     description = "Card not found",
